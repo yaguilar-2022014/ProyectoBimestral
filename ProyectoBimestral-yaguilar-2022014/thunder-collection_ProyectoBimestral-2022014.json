@@ -1,0 +1,91 @@
+{
+    "client": "Thunder Client",
+    "collectionName": "ProyectoBimestral-2022014",
+    "dateExported": "2024-02-22T23:22:19.466Z",
+    "version": "1.1",
+    "folders": [
+        {
+            "_id": "cedc67a0-873e-4258-bc9f-1b9c5b920c7d",
+            "name": "ADMIN",
+            "containerId": "",
+            "created": "2024-02-22T22:59:34.683Z",
+            "sortNum": 10000
+        },
+        {
+            "_id": "65bab4a6-61f8-4870-836b-ccade7e20149",
+            "name": "CLIENT",
+            "containerId": "",
+            "created": "2024-02-22T22:59:40.546Z",
+            "sortNum": 20000
+        }
+    ],
+    "requests": [
+        {
+            "_id": "cc9a65a3-75fb-41f0-bc29-42185f6a91f8",
+            "colId": "524ae352-42b5-4eac-ba05-38407486cf75",
+            "containerId": "cedc67a0-873e-4258-bc9f-1b9c5b920c7d",
+            "name": "Test(user)",
+            "url": "user/test",
+            "method": "GET",
+            "sortNum": 10000,
+            "created": "2024-02-22T22:46:58.053Z",
+            "modified": "2024-02-22T22:52:01.361Z",
+            "headers": [],
+            "params": [],
+            "tests": []
+        },
+        {
+            "_id": "4f7563a8-056f-4f36-bf4a-74ec0b32fefe",
+            "colId": "524ae352-42b5-4eac-ba05-38407486cf75",
+            "containerId": "65bab4a6-61f8-4870-836b-ccade7e20149",
+            "name": "Register",
+            "url": "user/register",
+            "method": "POST",
+            "sortNum": 30000,
+            "created": "2024-02-22T23:02:55.571Z",
+            "modified": "2024-02-22T23:07:13.701Z",
+            "headers": [],
+            "params": [],
+            "body": {
+                "type": "formencoded",
+                "raw": "",
+                "form": [
+                    {
+                        "name": "name",
+                        "value": "Yerick"
+                    },
+                    {
+                        "name": "surname",
+                        "value": "Aguilar"
+                    },
+                    {
+                        "name": "email",
+                        "value": "yerick@gmail.com"
+                    },
+                    {
+                        "name": "username",
+                        "value": "IceKry"
+                    },
+                    {
+                        "name": "password",
+                        "value": "12345678"
+                    },
+                    {
+                        "name": "addres",
+                        "value": "Mi casa"
+                    },
+                    {
+                        "name": "phone",
+                        "value": "12345678"
+                    }
+                ]
+            },
+            "tests": []
+        }
+    ],
+    "settings": {
+        "options": {
+            "baseUrl": "localhost:2880/"
+        }
+    }
+}
