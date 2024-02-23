@@ -24,8 +24,9 @@ export const register = async (req, res) => {
 
 export const login = async (req, res) => {
     try {
-        let { username, password } = req.body
-        let user = await User.findOne({ username })
+        let { username, password, email } = req.body
+        let user = await User.findOne({ username})
+        let mail = await User.findOne({email})
         if (user && await checkPassword(password, user.password)) {
             let loggedUser = {
                 uid: user._id,
@@ -35,6 +36,15 @@ export const login = async (req, res) => {
             }
             let token = await generateJwt(loggedUser)
             return res.send({ message: `Welcome ${user.name}`, loggedUser, token })
+        }else{
+            let loggedUser = {
+                uid: mail._id,
+                username: mail.username,
+                name: mail.name,
+                role: mail.role
+            }
+            let token = await generateJwt(loggedUser)
+            return res.send({message: `Welcome ${mail.name}`, loggedUser, token})
         }
     } catch (err) {
         console.log(err)
