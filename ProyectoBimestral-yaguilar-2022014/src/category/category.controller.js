@@ -2,6 +2,7 @@
 
 import { checkUpdate } from '../utils/validator.js'
 import Category from './category.model.js'
+import Product from '../product/product.model.js'
 
 export const defaultCatgory = async () => {
     try {
@@ -22,12 +23,12 @@ export const defaultCatgory = async () => {
 export const create = async (req, res) => {
     try {
         let data = req.body
-        //Validación nombre/descripción vacío
+        //Validate Empty name
         if (data.name == '' || data.description == '') return res.status(400).send({ message: 'Please enter a valid name or description for category' })
-        //Validación nombre de categoría ya existe
+        //Validate Category name exists
         let exists = await Category.findOne({ name: data.name })
         if (exists) return res.send({ message: 'Category already exists' })
-        //Guardar Categoría
+        //Save Category
         let category = new Category(data)
         await category.save()
         return res.send({ message: 'Category created Successfully!!' })
@@ -41,6 +42,15 @@ export const listCategory = async (req, res) => {
     try {
         let category = await Category.find({})
         return res.send({ category })
+    } catch (err) {
+        console.error(err)
+    }
+}
+
+export const listCategoryUser = async(req, res)=>{
+    try {
+        let category = await Category.find({name: {$ne: 'Default'}})//$ne (Not Equal)
+        return res.send(category)
     } catch (err) {
         console.error(err)
     }
@@ -68,6 +78,10 @@ export const update = async (req, res) => {
 export const deleteCategory = async (req, res) => {
     try {
         let { id } = req.params
+
+        const defaultCatgory = await Category.findOne({name: 'DEFAULT'})
+        await Product.updateMany({category: id}, {category: defaultCatgory._id})
+
         let deletedCategory = await Category.deleteOne({_id: id})
         if(deletedCategory.deletedCount == 0)return res.status(404).send({message: 'Category not found, not deleted'})
         return res.send({message: 'Category deleted successfully!!'})

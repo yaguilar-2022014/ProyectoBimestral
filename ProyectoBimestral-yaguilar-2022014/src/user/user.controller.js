@@ -12,7 +12,6 @@ export const register = async (req, res) => {
     try {
         let data = req.body
         data.password = await encrypt(data.password)
-        data.role = 'CLIENT'
         let user = new User(data)
         await user.save()
         return res.send({ message: 'Registered Successfully!!' })

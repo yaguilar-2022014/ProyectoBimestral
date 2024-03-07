@@ -1,7 +1,7 @@
 'use stritc'
 
 import express from 'express'
-import { create, deleteCategory, listCategory, update } from './category.controller.js'
+import { create, deleteCategory, listCategory, listCategoryUser, update } from './category.controller.js'
 import { isAdmin, validateJwt } from '../middlewares/validate-jwt.js'
 
 const api = express.Router()
@@ -12,5 +12,6 @@ api.put('/update/:id', [validateJwt, isAdmin], update)
 api.delete('/deleteCategory/:id', [validateJwt, isAdmin], deleteCategory)
 
 //ROLE CLIENT
+api.get('/listCategoryUser', [validateJwt], listCategoryUser)
 
 export default api
