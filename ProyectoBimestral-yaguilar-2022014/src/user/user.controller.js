@@ -3,6 +3,7 @@
 import User from './user.model.js'
 import { checkPassword, checkUpdate, encrypt } from '../utils/validator.js'
 import { generateJwt } from '../utils/jwt.js'
+import { createCart } from '../shopping/shopping.controller.js'
 
 export const test = (req, res) => {
     return res.send('User | Función Test')
@@ -14,6 +15,9 @@ export const register = async (req, res) => {
         data.password = await encrypt(data.password)
         let user = new User(data)
         await user.save()
+        let userfound = user.id
+        console.log(userfound)
+        await createCart(userfound)
         return res.send({ message: 'Registered Successfully!!' })
     } catch (err) {
         console.error(err)
@@ -95,6 +99,19 @@ export const update = async (req, res) => {
     } catch (err) {
         console.error(err)
         return res.status(500).send({ message: 'Error updating account' })
+    }
+}
+
+export const updateProfile = async(req, res)=>{
+    try {
+        let {id} = req.params
+        let data = req.body
+        let update = checkUpdate(data, id)
+        if (!update) return res.status(400).send({ message: 'Have submited some data that cannot be updated or mising data' })
+        
+    } catch (err) {
+        console.error(err)
+        return res.status(500).send({message: 'Error updating Profile'})
     }
 }
 
