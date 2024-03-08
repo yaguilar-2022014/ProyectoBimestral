@@ -28,8 +28,8 @@ export const register = async (req, res) => {
 export const login = async (req, res) => {
     try {
         let { username, password, email } = req.body
-        let user = await User.findOne({ username})
-        let mail = await User.findOne({email})
+        let user = await User.findOne({ username })
+        let mail = await User.findOne({ email })
         if (user && await checkPassword(password, user.password)) {
             let loggedUser = {
                 uid: user._id,
@@ -39,7 +39,7 @@ export const login = async (req, res) => {
             }
             let token = await generateJwt(loggedUser)
             return res.send({ message: `Welcome ${user.name}`, loggedUser, token })
-        }else{
+        } else {
             let loggedUser = {
                 uid: mail._id,
                 username: mail.username,
@@ -47,7 +47,7 @@ export const login = async (req, res) => {
                 role: mail.role
             }
             let token = await generateJwt(loggedUser)
-            return res.send({message: `Welcome ${mail.name}`, loggedUser, token})
+            return res.send({ message: `Welcome ${mail.name}`, loggedUser, token })
         }
     } catch (err) {
         console.log(err)
@@ -102,35 +102,52 @@ export const update = async (req, res) => {
     }
 }
 
-export const updateProfile = async(req, res)=>{
+export const updateProfile = async (req, res) => {
     try {
-        let {id} = req.params
+        let { id } = req.params
         let data = req.body
         let update = checkUpdate(data, id)
         if (!update) return res.status(400).send({ message: 'Have submited some data that cannot be updated or mising data' })
-        
+        if (data.role) {
+            return res.status(400).send({ message: 'Role cannot be updated' })
+        } else {
+            let updatedUser = await User.findOneAndUpdate(
+                { _id: id },
+                data,
+                { new: true }
+            )
+            if (!updatedUser) return res.status(404).send({ message: 'User not found and not updated' })
+            return res.send({ message: 'User updated successfully!!', updatedUser })
+        }
+
     } catch (err) {
         console.error(err)
-        return res.status(500).send({message: 'Error updating Profile'})
+        return res.status(500).send({ message: 'Error updating account' })
     }
 }
 
 export const deleteUser = async (req, res) => {
     try {
         let { id } = req.params
-        let deletedUser = await User.deleteOne({_id: id})
-        if(deletedUser.deletedCount == 0)return res.status(404).send({message: 'User not found, not deleted'})
-        return res.send({message: 'User deleted successfully!!'})
+        let { password, username } = req.body
+        let user = await User.findOne({ username })
+        if (user && await checkPassword(password, user.password)) {
+            let deletedUser = await User.deleteOne({ _id: id })
+            if (deletedUser.deletedCount == 0) return res.status(404).send({ message: 'User not found, not deleted' })
+            return res.send({ message: 'User deleted successfully!!' })
+        } else {
+            return res.status(400).send({ message: 'Profile cannot be deleted' })
+        }
     } catch (err) {
         console.error(err)
-        return res.status(500).send({message: 'Error deleting user'})
+        return res.status(500).send({ message: 'Error deleting user' })
     }
 }
 
-export const listUser = async(req, res)=>{
+export const listUser = async (req, res) => {
     try {
         let user = await User.find({})
-        return res.send({user})
+        return res.send({ user })
     } catch (err) {
         console.error(err)
     }
