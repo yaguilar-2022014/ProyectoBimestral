@@ -15,7 +15,7 @@ export const addProduct = async (req, res) => {
 
         let product = new Product(data)
         await product.save()
-        return res.send({ message: 'Product added successfuly !!' })
+        return res.send({ message: 'Product added successfuly !!', product})
     } catch (err) {
         console.error(err)
         return res.status(500).send({ message: 'Error creating product' })
@@ -24,7 +24,7 @@ export const addProduct = async (req, res) => {
 
 export const listProduct = async (req, res) => {
     try {
-        let products = await Product.find().populate('category', ['name'])
+        let products = await Product.find().populate('category')
         return res.send(products)
     } catch (err) {
         console.error(err)
@@ -34,7 +34,7 @@ export const listProduct = async (req, res) => {
 export const listIndividual = async (req, res) => {
     try {
         let { id } = req.params
-        let product = await Product.findOne({ _id: id }).populate('category', ['name'])
+        let product = await Product.findOne({ _id: id }).populate('category')
         return res.send(product)
     } catch (err) {
         console.error(err)
@@ -43,7 +43,7 @@ export const listIndividual = async (req, res) => {
 
 export const listOutOfStock = async (req, res) => {
     try {
-        let products = await Product.findOne({ stock: 0 }).populate('category', ['name'])
+        let products = await Product.findOne({ stock: 0 }).populate('category')
         return res.send(products)
     } catch (err) {
         console.error(err)
@@ -52,7 +52,7 @@ export const listOutOfStock = async (req, res) => {
 
 export const listMorePurchased = async (req, res) => {
     try {
-        let products = await Product.find().populate('category', ['name']).sort({ purchased: 'desc' })
+        let products = await Product.find().populate('category').sort({ purchased: 'desc' }).limit(15)
         return res.send(products)
     } catch (err) {
         console.error(err)
@@ -65,7 +65,7 @@ export const searchByName = async (req, res) => {
 
         const regex = new RegExp(search, 'i')//Regex and 'i' for case insensitive
 
-        let products = await Product.find({ name: regex }).populate('category', ['name'])
+        let products = await Product.find({ name: regex }).populate('category')
         if (!products) return res.status(400).send({ message: 'Products not found' })
         return res.send(products)
     } catch (err) {
@@ -77,7 +77,7 @@ export const searchByName = async (req, res) => {
 export const searchByCategory = async(req, res)=>{
     try {
         let {search} = req.body
-        let products = await Product.find({category: search})
+        let products = await Product.find({category: search}).populate('category',)
         if(!products)return res.status(400).send({message: 'Products not found'})
         return res.send(products)
     } catch (err) {

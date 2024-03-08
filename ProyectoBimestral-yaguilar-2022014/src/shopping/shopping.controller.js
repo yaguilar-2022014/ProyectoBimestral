@@ -29,15 +29,15 @@ export const addProduct = async (req, res) => {
 
 
         //Validate Stock
-        if (foundStock < amount) return res.status(400).send({ message: 'Insufficient Stock, only ...' })
+        if (foundStock < amount) return res.status(400).send({ message: `Insufficient Stock, only ${foundStock} avalaible` })
 
         //Update shopping cart
         let shoppingCart = await Shopping.findById(id).populate('user')
         //Verify if item exist in shopping cart
-        let exist = shoppingCart.item.find((item) => item.product.toString() === product.toString())
+        let exist = shoppingCart.item.find((item) => item.product == product)//Callback para determinar si un elemento del arreglo es una coincidencia
         //Update
         if (exist) {
-            if ((exist.amount += parseInt(amount)) > foundStock) return res.send({ message: 'Insufficient Stock' })//Callback para determinar si un elemento del arreglo es una coincidencia
+            if ((exist.amount += parseInt(amount)) > foundStock) return res.send({ message: 'Insufficient Stock' })
         } else {
             shoppingCart.item.push({ product, amount })
         }
@@ -58,9 +58,11 @@ export const buyProducts = async (req, res) => {
         item.product.stock -= item.amount
         await item.product.save()
     }
+    const saved = shoppingCart.item
+
     shoppingCart.item=[]
     await shoppingCart.save()
-    return res.send({message: 'Purchase Complete'})
+    return res.send({message: 'Purchase Complete', saved})
 }
 
 

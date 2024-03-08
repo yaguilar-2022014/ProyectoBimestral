@@ -7,14 +7,14 @@ import Product from '../product/product.model.js'
 export const defaultCatgory = async () => {
     try {
         const exists = await Category.findOne({ name: 'DEFAULT' })
-        if (exists) return
+        if (exists) return console.log('Default category already exists')
         let data = {
             name: 'DEFAULT',
             description: 'Categoría por defecto'
         }
         let category = new Category(data)
         await category.save()
-        return
+        return console.log('Default category created')
     } catch (err) {
         console.error(err)
     }
@@ -31,7 +31,7 @@ export const create = async (req, res) => {
         //Save Category
         let category = new Category(data)
         await category.save()
-        return res.send({ message: 'Category created Successfully!!' })
+        return res.send({ message: 'Category created Successfully!!', category})
     } catch (err) {
         console.error(err)
         return res.status(500).send({ message: 'Error creating category' })
@@ -83,7 +83,7 @@ export const deleteCategory = async (req, res) => {
         await Product.updateMany({category: id}, {category: defaultCatgory._id})
 
         let deletedCategory = await Category.deleteOne({_id: id})
-        if(deletedCategory.deletedCount == 0)return res.status(404).send({message: 'Category not found, not deleted'})
+        if(!deletedCategory)return res.status(404).send({message: 'Category not found, not deleted'})
         return res.send({message: 'Category deleted successfully!!'})
     } catch (err) {
         console.error(err)
